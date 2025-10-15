@@ -5,10 +5,12 @@ import com.hnsc.triagemoncologica.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -45,11 +47,8 @@ public class Paciente {
     /*
      * # Capacidade funcional do paciente
      *
-     * - ECOG 0 - Totalmente ativo
-     * - ECOG 1 - Sintomas leves
-     * - ECOG 2 - Sintomas moderados
-     * - ECOG 3 - Sintomas graves
-     * - ECOG 4 - Totalmente incapacitado
+     * - ECOG 0 - Totalmente ativo - ECOG 1 - Sintomas leves - ECOG 2 - Sintomas moderados - ECOG 3
+     * - Sintomas graves - ECOG 4 - Totalmente incapacitado
      */
     @Min(0)
     @Max(4)
@@ -75,24 +74,21 @@ public class Paciente {
     /**
      * Exames de imagem faltando
      * <p>
-     * True se estiverem faltando exames de imagem.
-     * False se não estiverem faltando.
+     * True se estiverem faltando exames de imagem. False se não estiverem faltando.
      */
     private Boolean examesImagem;
 
     /**
      * Biópsia faltando
      * <p>
-     * True se estiver faltando biópsia.
-     * False se não estiver faltando.
+     * True se estiver faltando biópsia. False se não estiver faltando.
      */
     private Boolean biopsia;
 
     /**
      * Imuno-histoquimica faltando
      * <p>
-     * True se estiver faltando imuno-histoquimica.
-     * False se não estiver faltando.
+     * True se estiver faltando imuno-histoquimica. False se não estiver faltando.
      */
     private Boolean imunoHistoquimica;
 
@@ -124,18 +120,22 @@ public class Paciente {
 
     private Integer pontuacaoTotal;
 
+    @CreationTimestamp
+    private OffsetDateTime dtCriacao;
+
     public Paciente() {
     }
 
     public Paciente(UUID id, String nomeCompleto, LocalDate dtNascimento, Sexo sexo, Long cartaoSus,
                     String municipioResidencia, Integer distanciaCentroOncologico, TipoCancer tipoCancer,
-                    @Min(0) @Max(4) Integer tnm, @Min(0) @Max(4) Integer ecog, Boolean presencaMetastase,
-                    Boolean comorbidadesRelevantes, Boolean dorIntensa, Boolean sangramentoAtivo, Boolean perdaPeso,
-                    LocalDate dtDiagnostico, LocalDate dtEncaminhamento, Boolean examesImagem, Boolean biopsia,
-                    Boolean imunoHistoquimica, EtapaAtualCuidado etapaAtualCuidado,
-                    CondicaoSocioeconomica condicaoSocioeconomica, Escolaridade escolaridade, Boolean cuidadorAusente,
-                    Prioridade prioridade, Integer pontuacaoGeografica, Integer pontuacaoClinica, Integer pontuacaoAssistencial,
-                    Integer pontuacaoSociodemografica, Integer pontuacaoTotal) {
+                    Integer tnm, Integer ecog, Boolean presencaMetastase, Boolean comorbidadesRelevantes,
+                    Boolean dorIntensa, Boolean sangramentoAtivo, Boolean perdaPeso,
+                    LocalDate dtDiagnostico, LocalDate dtEncaminhamento, Boolean examesImagem,
+                    Boolean biopsia, Boolean imunoHistoquimica, EtapaAtualCuidado etapaAtualCuidado,
+                    CondicaoSocioeconomica condicaoSocioeconomica, Escolaridade escolaridade,
+                    Boolean cuidadorAusente, Prioridade prioridade, Integer pontuacaoGeografica,
+                    Integer pontuacaoClinica, Integer pontuacaoAssistencial,
+                    Integer pontuacaoSociodemografica, Integer pontuacaoTotal, OffsetDateTime dtCriacao) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.dtNascimento = dtNascimento;
@@ -166,6 +166,7 @@ public class Paciente {
         this.pontuacaoAssistencial = pontuacaoAssistencial;
         this.pontuacaoSociodemografica = pontuacaoSociodemografica;
         this.pontuacaoTotal = pontuacaoTotal;
+        this.dtCriacao = dtCriacao;
     }
 
     public UUID getId() {
@@ -424,5 +425,13 @@ public class Paciente {
 
     public void setPontuacaoTotal(Integer pontuacaoTotal) {
         this.pontuacaoTotal = pontuacaoTotal;
+    }
+
+    public OffsetDateTime getDtCriacao() {
+        return dtCriacao;
+    }
+
+    public void setDtCriacao(OffsetDateTime dtCriacao) {
+        this.dtCriacao = dtCriacao;
     }
 }
