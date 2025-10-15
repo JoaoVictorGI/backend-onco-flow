@@ -1,22 +1,21 @@
 package com.hnsc.triagemoncologica.controller;
 
+import com.hnsc.triagemoncologica.dto.LoginUsuarioRequestDTO;
+import com.hnsc.triagemoncologica.dto.LoginUsuarioResponseDTO;
+import com.hnsc.triagemoncologica.dto.RegistroUsuarioRequestDTO;
+import com.hnsc.triagemoncologica.dto.RegistroUsuarioResponseDTO;
+import com.hnsc.triagemoncologica.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.hnsc.triagemoncologica.dto.LoginUsuarioRequestDTO;
-import com.hnsc.triagemoncologica.dto.LoginUsuarioResponseDTO;
-import com.hnsc.triagemoncologica.dto.RegistroUsuarioRequestDTO;
-import com.hnsc.triagemoncologica.dto.RegistroUsuarioResponseDTO;
-import com.hnsc.triagemoncologica.service.UsuarioService;
-
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @Tag(name = "Usuário", description = "Endpoints para gerenciamento de usuários")
 @RestController
@@ -28,6 +27,7 @@ public class UsuarioController {
         this.service = service;
     }
 
+    @Operation(summary = "Registra um novo usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso"),
             @ApiResponse(responseCode = "409", description = "E-mail ou nome já em uso")
@@ -37,6 +37,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.registroUsuario(req));
     }
 
+    @Operation(summary = "Login de usuário")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
             @ApiResponse(responseCode = "401", description = "E-mail ou senha inválidos")
