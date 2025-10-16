@@ -6,7 +6,7 @@ import com.hnsc.triagemoncologica.model.Usuario;
 
 public class UsuarioMapper {
     public static UsuarioSemSenhaDTO paraUsuarioSemSenhaDto(Usuario usuario) {
-        return new UsuarioSemSenhaDTO(usuario.getId(), usuario.getNomeCompleto(), usuario.getEmail());
+        return new UsuarioSemSenhaDTO(usuario.getId(), usuario.getNomeCompleto(), usuario.getEmail(), usuario.getRole());
     }
 
     public static RegistroUsuarioResponseDTO paraRegistroUsuarioResponseDto(Usuario usuario) {

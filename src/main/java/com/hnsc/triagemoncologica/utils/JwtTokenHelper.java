@@ -1,14 +1,13 @@
 package com.hnsc.triagemoncologica.utils;
 
-import java.time.Instant;
-
+import com.hnsc.triagemoncologica.ApplicationProperties;
+import com.hnsc.triagemoncologica.dto.UsuarioSemSenhaDTO;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
 
-import com.hnsc.triagemoncologica.ApplicationProperties;
-import com.hnsc.triagemoncologica.dto.UsuarioSemSenhaDTO;
+import java.time.Instant;
 
 @Component
 public class JwtTokenHelper {
@@ -28,6 +27,7 @@ public class JwtTokenHelper {
                 .expiresAt(now.plusSeconds(properties.jwt().expiresAt()))
                 .subject(dto.email())
                 .claim("usuario_id", dto.id())
+                .claim("role", dto.role())
                 .build();
 
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

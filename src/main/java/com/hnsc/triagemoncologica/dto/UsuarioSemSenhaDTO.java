@@ -1,8 +1,10 @@
 package com.hnsc.triagemoncologica.dto;
 
-import java.util.UUID;
-
+import com.hnsc.triagemoncologica.enums.Role;
 import jakarta.validation.constraints.Email;
 
-public record UsuarioSemSenhaDTO(UUID id, String nomeCompleto, @Email String email) {
+import java.util.UUID;
+
+public record UsuarioSemSenhaDTO(UUID id, String nomeCompleto,
+                                 @Email String email, Role role) {
 }

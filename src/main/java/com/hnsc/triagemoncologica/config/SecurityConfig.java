@@ -1,5 +1,6 @@
 package com.hnsc.triagemoncologica.config;
 
+import com.hnsc.triagemoncologica.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
-import com.hnsc.triagemoncologica.enums.Role;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -29,8 +28,7 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .cors(CorsConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/scalar/**", "/usuario/login",
-                                "/h2-console/**")
+                        .requestMatchers("/v3/api-docs/**", "/scalar/**", "/api/usuario/login")
                         .permitAll()
                         .requestMatchers("/usuario/registro")
                         .hasRole(Role.ADMIN.name())
