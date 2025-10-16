@@ -46,5 +46,5 @@ jobs:
           chmod 600 key.pem
           ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "cd ${COMPOSE_FILE_PATH} && docker-compose stop backend"
           ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "docker pull joaovictorgi/backend-onco-flow:latest"
-          ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "cd ${COMPOSE_FILE_PATH} && docker-compose start backend"
+          ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "cd ${COMPOSE_FILE_PATH} && docker-compose up -d backend"
           rm key.pem
