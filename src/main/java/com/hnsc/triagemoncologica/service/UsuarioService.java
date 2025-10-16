@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.hnsc.triagemoncologica.dto.LoginUsuarioRequestDTO;
 import com.hnsc.triagemoncologica.dto.LoginUsuarioResponseDTO;
 import com.hnsc.triagemoncologica.dto.RegistroUsuarioRequestDTO;
@@ -19,7 +18,6 @@ import com.hnsc.triagemoncologica.mapper.UsuarioMapper;
 import com.hnsc.triagemoncologica.model.Usuario;
 import com.hnsc.triagemoncologica.repository.UsuarioRepository;
 import com.hnsc.triagemoncologica.utils.JwtTokenHelper;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -47,7 +45,8 @@ public class UsuarioService implements UserDetailsService {
     @Transactional
     public RegistroUsuarioResponseDTO registroUsuario(RegistroUsuarioRequestDTO dto) {
         if (repository.findByEmail(dto.email()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail: " + dto.email() + " já em uso");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "E-mail: " + dto.email() + " já em uso");
         }
 
         if (repository.findByNomeCompleto(dto.nomeCompleto()).isPresent()) {
@@ -59,6 +58,7 @@ public class UsuarioService implements UserDetailsService {
         usuario.setNomeCompleto(dto.nomeCompleto());
         usuario.setEmail(dto.email());
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        usuario.setRole(dto.role());
 
         return UsuarioMapper.paraRegistroUsuarioResponseDto(repository.save(usuario));
     }
@@ -68,7 +68,8 @@ public class UsuarioService implements UserDetailsService {
         authManager.authenticate(authentication);
 
         Usuario usuario = repository.findByEmail(dto.email())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                        "E-mail ou senha inválidos"));
 
         var jwtToken = jwtTokenHelper.generateToken(UsuarioMapper.paraUsuarioSemSenhaDto(usuario));
         return new LoginUsuarioResponseDTO(usuario.getNomeCompleto(), usuario.getEmail(), jwtToken);
