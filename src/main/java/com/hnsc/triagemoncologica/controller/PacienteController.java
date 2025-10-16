@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -73,6 +74,20 @@ public class PacienteController {
         Pageable pageable = PageRequest.of(page, size);
 
         return ResponseEntity.ok(service.findAllOrderByPrioridade(pageable));
+    }
+
+    @Operation(summary = "Busca um paciente pelo seu nome")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Paciente encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Paciente não encontrado")
+    })
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<Paciente> findByNomeCompleto(@PathVariable String nome) {
+        Paciente paciente = service.findByNomeCompleto(nome)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Paciente com nome: " + nome + " não encontrado"));
+
+        return ResponseEntity.ok(paciente);
     }
 
     @Operation(summary = "Deleta um paciente pelo seu ID")

@@ -1,5 +1,6 @@
 package com.hnsc.triagemoncologica.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,4 +13,6 @@ import com.hnsc.triagemoncologica.model.Paciente;
 @Repository
 public interface PacienteRepository extends JpaRepository<Paciente, UUID> {
     Page<Paciente> findAllByOrderByPrioridadeAsc(Pageable pageable);
+
+    Optional<Paciente> findByNomeCompletoLike(String nomeCompleto);
 }
