@@ -63,6 +63,18 @@ public class PacienteController {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
+    @Operation(summary = "Lista todos os pacientes com paginação e ordenados por prioridade")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de pacientes retornada com sucesso")
+    })
+    @GetMapping("/prioridade")
+    public ResponseEntity<Page<Paciente>> findAllOrderByPrioridade(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(service.findAllOrderByPrioridade(pageable));
+    }
+
     @Operation(summary = "Deleta um paciente pelo seu ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Paciente deletado com sucesso")

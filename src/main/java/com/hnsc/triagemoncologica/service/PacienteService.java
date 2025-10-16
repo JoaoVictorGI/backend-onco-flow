@@ -44,6 +44,10 @@ public class PacienteService {
 		return repository.findAll(pageable);
 	}
 
+	public Page<Paciente> findAllOrderByPrioridade(Pageable pageable) {
+		return repository.findAllByOrderByPrioridadeAsc(pageable);
+	}
+
 	public Paciente update(Paciente paciente) {
 		return repository.save(paciente);
 	}
