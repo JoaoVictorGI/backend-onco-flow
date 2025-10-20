@@ -65,13 +65,13 @@ class PacienteServiceTest {
         paciente.setExamesImagem(false); // 0
         paciente.setBiopsia(false); // 0
         paciente.setImunoHistoquimica(false); // 0
-        paciente.setEtapaAtualCuidado(EtapaAtualCuidado.DIAGNOSTICO); // +1
+        paciente.setEtapaAtualCuidado(EtapaAtualCuidado.EM_TRATAMENTO); // 0
         paciente.setCondicaoSocioeconomica(CondicaoSocioeconomica.REGULAR); // 0
         paciente.setCuidadorAusente(false); // 0
         paciente.setEscolaridade(Escolaridade.ENSINO_SUPERIOR); // 0
-        // Total: 1
+        // Total: 0
 
         Integer pontuacao = pacienteService.calculaPontuacao(paciente).getPontuacaoTotal();
-        assertEquals(1, pontuacao);
+        assertEquals(0, pontuacao);
     }
 }

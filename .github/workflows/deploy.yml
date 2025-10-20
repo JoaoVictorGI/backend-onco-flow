@@ -1,9 +1,6 @@
 name: Deploy Backend
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
 
 jobs:
@@ -17,8 +14,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
-          distribution: 'temurin'
+          java-version: "25"
+          distribution: "temurin"
 
       - name: Build application image
         run: ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=triagemoncologica:0.0.1 -DskipTests

@@ -48,8 +48,8 @@ public class PacienteService {
 		return repository.findAllByOrderByPrioridadeAsc(pageable);
 	}
 
-	public Optional<Paciente> findByNomeCompleto(String nomeCompleto) {
-		return repository.findByNomeCompletoLike(nomeCompleto);
+	public Page<Paciente> findByNomeOrderByPrioridadeAsc(String nomeCompleto, Pageable pageable) {
+		return repository.findByNomeOrderByPrioridadeAsc(nomeCompleto, pageable);
 	}
 
 	public Paciente update(Paciente paciente) {
