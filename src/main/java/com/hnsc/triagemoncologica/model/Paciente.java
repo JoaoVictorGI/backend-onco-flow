@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
+@SoftDelete(strategy = SoftDeleteType.ACTIVE, columnName = "dtDeletado", converter = StateConverter.class)
 public class Paciente {
 
     @Id
@@ -47,7 +50,8 @@ public class Paciente {
     /*
      * # Capacidade funcional do paciente
      *
-     * - ECOG 0 - Totalmente ativo - ECOG 1 - Sintomas leves - ECOG 2 - Sintomas moderados - ECOG 3
+     * - ECOG 0 - Totalmente ativo - ECOG 1 - Sintomas leves - ECOG 2 - Sintomas
+     * moderados - ECOG 3
      * - Sintomas graves - ECOG 4 - Totalmente incapacitado
      */
     @Min(0)
@@ -127,15 +131,15 @@ public class Paciente {
     }
 
     public Paciente(UUID id, String nomeCompleto, LocalDate dtNascimento, Sexo sexo, Long cartaoSus,
-                    String municipioResidencia, Integer distanciaCentroOncologico, TipoCancer tipoCancer,
-                    Integer tnm, Integer ecog, Boolean presencaMetastase, Boolean comorbidadesRelevantes,
-                    Boolean dorIntensa, Boolean sangramentoAtivo, Boolean perdaPeso,
-                    LocalDate dtDiagnostico, LocalDate dtEncaminhamento, Boolean examesImagem,
-                    Boolean biopsia, Boolean imunoHistoquimica, EtapaAtualCuidado etapaAtualCuidado,
-                    CondicaoSocioeconomica condicaoSocioeconomica, Escolaridade escolaridade,
-                    Boolean cuidadorAusente, Prioridade prioridade, Integer pontuacaoGeografica,
-                    Integer pontuacaoClinica, Integer pontuacaoAssistencial,
-                    Integer pontuacaoSociodemografica, Integer pontuacaoTotal, OffsetDateTime dtCriacao) {
+            String municipioResidencia, Integer distanciaCentroOncologico, TipoCancer tipoCancer,
+            Integer tnm, Integer ecog, Boolean presencaMetastase, Boolean comorbidadesRelevantes,
+            Boolean dorIntensa, Boolean sangramentoAtivo, Boolean perdaPeso,
+            LocalDate dtDiagnostico, LocalDate dtEncaminhamento, Boolean examesImagem,
+            Boolean biopsia, Boolean imunoHistoquimica, EtapaAtualCuidado etapaAtualCuidado,
+            CondicaoSocioeconomica condicaoSocioeconomica, Escolaridade escolaridade,
+            Boolean cuidadorAusente, Prioridade prioridade, Integer pontuacaoGeografica,
+            Integer pontuacaoClinica, Integer pontuacaoAssistencial,
+            Integer pontuacaoSociodemografica, Integer pontuacaoTotal, OffsetDateTime dtCriacao) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.dtNascimento = dtNascimento;
