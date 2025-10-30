@@ -1,5 +1,8 @@
 package com.hnsc.triagemoncologica;
 
+import com.hnsc.triagemoncologica.enums.Role;
+import com.hnsc.triagemoncologica.model.Usuario;
+import com.hnsc.triagemoncologica.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.hnsc.triagemoncologica.enums.Role;
-import com.hnsc.triagemoncologica.model.Usuario;
-import com.hnsc.triagemoncologica.repository.UsuarioRepository;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -23,10 +22,12 @@ public class TriagemoncologicaApplication {
 	}
 
 	@Bean
-	CommandLineRunner createDefaultAdmin(UsuarioRepository repository, PasswordEncoder pe,
-			ApplicationProperties appProperties) {
+	CommandLineRunner createDefaultAdmin(
+			UsuarioRepository repository, PasswordEncoder pe, ApplicationProperties appProperties) {
 		return _ -> {
-			if (repository.findByNomeCompleto(appProperties.admin().nomeCompleto()).isEmpty()) {
+			if (repository
+					.findByNomeCompleto(appProperties.admin().nomeCompleto())
+					.isEmpty()) {
 				var admin = new Usuario();
 				admin.setNomeCompleto(appProperties.admin().nomeCompleto());
 				admin.setEmail(appProperties.admin().email());

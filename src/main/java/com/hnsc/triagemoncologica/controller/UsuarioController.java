@@ -29,8 +29,8 @@ public class UsuarioController {
 
     @Operation(summary = "Registra um novo usuário")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso"),
-            @ApiResponse(responseCode = "409", description = "E-mail ou nome já em uso")
+        @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso"),
+        @ApiResponse(responseCode = "409", description = "E-mail ou nome já em uso")
     })
     @PostMapping("/registro")
     ResponseEntity<RegistroUsuarioResponseDTO> registroUsuario(@RequestBody @Valid RegistroUsuarioRequestDTO req) {
@@ -39,8 +39,8 @@ public class UsuarioController {
 
     @Operation(summary = "Login de usuário")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
-            @ApiResponse(responseCode = "401", description = "E-mail ou senha inválidos")
+        @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
+        @ApiResponse(responseCode = "401", description = "E-mail ou senha inválidos")
     })
     @PostMapping("/login")
     ResponseEntity<LoginUsuarioResponseDTO> loginUsuario(@RequestBody @Valid LoginUsuarioRequestDTO req) {

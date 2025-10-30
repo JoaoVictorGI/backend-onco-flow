@@ -1,9 +1,7 @@
 package com.hnsc.triagemoncologica.config;
 
 import com.hnsc.triagemoncologica.enums.Role;
-
 import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -32,12 +30,13 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/scalar/**", "/api/usuario/login")
-                        .permitAll()
-                        .requestMatchers("/usuario/registro")
-                        .hasRole(Role.ADMIN.name())
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/v3/api-docs/**", "/scalar/**", "/api/usuario/login")
+                                .permitAll()
+                                .requestMatchers("/usuario/registro")
+                                .hasRole(Role.ADMIN.name())
+                                .anyRequest()
+                                .authenticated())
                 .oauth2ResourceServer(jwt -> jwt.jwt(Customizer.withDefaults()))
                 .exceptionHandling(
                         auth -> auth.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))

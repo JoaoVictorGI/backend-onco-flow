@@ -2,12 +2,11 @@ package com.hnsc.triagemoncologica.utils;
 
 import com.hnsc.triagemoncologica.ApplicationProperties;
 import com.hnsc.triagemoncologica.dto.UsuarioSemSenhaDTO;
+import java.time.Instant;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
-
-import java.time.Instant;
 
 @Component
 public class JwtTokenHelper {

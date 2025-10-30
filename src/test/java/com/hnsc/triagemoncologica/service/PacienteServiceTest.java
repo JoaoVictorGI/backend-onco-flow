@@ -2,17 +2,15 @@ package com.hnsc.triagemoncologica.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-
 import com.hnsc.triagemoncologica.enums.CondicaoSocioeconomica;
 import com.hnsc.triagemoncologica.enums.Escolaridade;
 import com.hnsc.triagemoncologica.enums.EtapaAtualCuidado;
 import com.hnsc.triagemoncologica.model.Paciente;
+import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 class PacienteServiceTest {
     @InjectMocks
