@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,5 +91,12 @@ public class PacienteController {
         service.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Gera uma quantidade X de pacientes fictícios")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Pacientes criados com sucesso")})
+    @PostMapping("/{qtdPacientes}")
+    public ResponseEntity<Long> gerarPacientes(@PathVariable @NotNull long qtdPacientes) {
+        return ResponseEntity.ok(service.gerarPacientesFicticios(qtdPacientes));
     }
 }

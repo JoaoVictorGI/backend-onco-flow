@@ -2,19 +2,31 @@ package com.hnsc.triagemoncologica.service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import com.hnsc.triagemoncologica.dto.GerarPacienteDTO;
+import com.hnsc.triagemoncologica.dto.GerarPacienteDTO.Pessoa;
 import com.hnsc.triagemoncologica.enums.CondicaoSocioeconomica;
 import com.hnsc.triagemoncologica.enums.Escolaridade;
+import com.hnsc.triagemoncologica.enums.EtapaAtualCuidado;
 import com.hnsc.triagemoncologica.enums.Prioridade;
+import com.hnsc.triagemoncologica.enums.Sexo;
+import com.hnsc.triagemoncologica.enums.TipoCancer;
 import com.hnsc.triagemoncologica.model.Paciente;
 import com.hnsc.triagemoncologica.repository.PacienteRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class PacienteService {
@@ -218,5 +230,145 @@ public class PacienteService {
 
         logger.info("PRIORIDADE: BAIXA");
         return Prioridade.BAIXA;
+    }
+
+    @Transactional
+    public Long gerarPacientesFicticios(Long qtdPacientes) {
+        RestClient restClient = RestClient.create();
+        GerarPacienteDTO dadosPacientes = restClient
+                .get()
+                .uri("https://randomuser.me/api/?results=" + qtdPacientes + "&nat=br")
+                .retrieve()
+                .body(GerarPacienteDTO.class);
+
+        logger.info("QUANTIDADE DE PACIENTES: {}", qtdPacientes);
+        logger.info("DADOS PACIENTES LENGHT: {}", dadosPacientes.results().size());
+
+        List<Paciente> pacientes = new ArrayList<>();
+
+        for (Pessoa pacienteDTO : dadosPacientes.results()) {
+            Paciente paciente = new Paciente();
+
+            paciente.setNomeCompleto(
+                    pacienteDTO.name().first() + " " + pacienteDTO.name().last());
+
+            paciente.setDtNascimento(LocalDate.ofInstant(pacienteDTO.dob().date(), ZoneId.of("America/Sao_Paulo")));
+
+            switch (pacienteDTO.gender()) {
+                case "female" -> paciente.setSexo(Sexo.FEMININO);
+                case "male" -> paciente.setSexo(Sexo.MASCULINO);
+            }
+
+            paciente.setCartaoSus(Long.parseLong(gerarCartaoSus()));
+
+            paciente.setMunicipioResidencia("Tubarão");
+
+            paciente.setDistanciaCentroOncologico(1 + (int) (new Random().nextFloat() * (120 - 1)));
+
+            TipoCancer[] tiposCancer = TipoCancer.values();
+            int randomTipoCancerIndex = new Random().nextInt(tiposCancer.length);
+            paciente.setTipoCancer(tiposCancer[randomTipoCancerIndex]);
+
+            paciente.setTnm(1 + (int) (new Random().nextFloat() * (4 - 1)));
+
+            paciente.setEcog(0 + (int) (new Random().nextFloat() * (4 - 0)));
+
+            paciente.setPresencaMetastase(new Random().nextBoolean());
+
+            paciente.setComorbidadesRelevantes(new Random().nextBoolean());
+
+            paciente.setDorIntensa(new Random().nextBoolean());
+
+            paciente.setSangramentoAtivo(new Random().nextBoolean());
+
+            paciente.setPerdaPeso(new Random().nextBoolean());
+
+            LocalDate dtAtual = LocalDate.now();
+
+            paciente.setDtDiagnostico(gerarDataAleatoria(dtAtual.minusDays(75), dtAtual));
+
+            paciente.setDtEncaminhamento(gerarDataAleatoria(dtAtual.minusDays(45), dtAtual));
+
+            paciente.setExamesImagem(new Random().nextBoolean());
+
+            paciente.setBiopsia(new Random().nextBoolean());
+
+            paciente.setImunoHistoquimica(new Random().nextBoolean());
+
+            EtapaAtualCuidado[] etapasCuidado = EtapaAtualCuidado.values();
+            int randomEtapaAtualIndex = new Random().nextInt(etapasCuidado.length);
+            paciente.setEtapaAtualCuidado(etapasCuidado[randomEtapaAtualIndex]);
+
+            CondicaoSocioeconomica[] condicoesSocioeconomicas = CondicaoSocioeconomica.values();
+            int randomCondicaoSocioeconomicaIndex = new Random().nextInt(condicoesSocioeconomicas.length);
+            paciente.setCondicaoSocioeconomica(condicoesSocioeconomicas[randomCondicaoSocioeconomicaIndex]);
+
+            Escolaridade[] escolaridades = Escolaridade.values();
+            int randomEscolarideIndex = new Random().nextInt(escolaridades.length);
+            paciente.setEscolaridade(escolaridades[randomEscolarideIndex]);
+
+            paciente.setCuidadorAusente(new Random().nextBoolean());
+
+            calculaPontuacao(paciente);
+            paciente.setPrioridade(calculaPrioridade(paciente.getPontuacaoTotal()));
+
+            pacientes.add(paciente);
+        }
+
+        var savedPacientes = repository.saveAll(pacientes);
+
+        return Long.valueOf(savedPacientes.size());
+    }
+
+    private static LocalDate gerarDataAleatoria(LocalDate min, LocalDate max) {
+        long diaMinimo = min.toEpochDay();
+        long diaMaximo = max.toEpochDay();
+
+        long diaAleatorio = ThreadLocalRandom.current().nextLong(diaMinimo, diaMaximo);
+        return LocalDate.ofEpochDay(diaAleatorio);
+    }
+
+    public static String gerarCartaoSus() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        // 1. Gera o primeiro dígito (7, 8 ou 9)
+        // random.nextInt(3) gera 0, 1 ou 2. Somando 7, temos 7, 8 ou 9.
+        sb.append(7 + random.nextInt(3));
+
+        // 2. Gera os próximos 10 dígitos aleatórios
+        for (int i = 0; i < 10; i++) {
+            sb.append(random.nextInt(10));
+        }
+
+        String primeirosOnzeDigitos = sb.toString();
+        int soma = 0;
+
+        // 3. Cálculo da Soma Ponderada (Pesos de 15 a 5)
+        for (int i = 0; i < 11; i++) {
+            int digito = Character.getNumericValue(primeirosOnzeDigitos.charAt(i));
+            // O peso começa em 15 e diminui conforme o índice aumenta
+            // i=0 (peso 15), i=1 (peso 14), etc.
+            soma += digito * (15 - i);
+        }
+
+        int resto = soma % 11;
+        int digitoVerificador = 11 - resto;
+
+        if (digitoVerificador == 11) {
+            digitoVerificador = 0;
+        }
+
+        // 4. Definição do Sufixo e Retorno
+        if (digitoVerificador == 10) {
+            // Regra de exceção: Soma + 2 e concatena "001" + novo DV
+            soma += 2;
+            resto = soma % 11;
+            digitoVerificador = 11 - resto;
+            return primeirosOnzeDigitos + "001" + digitoVerificador;
+        } else {
+            // Regra padrão: concatena "000" + DV
+            return primeirosOnzeDigitos + "000" + digitoVerificador;
+        }
     }
 }
