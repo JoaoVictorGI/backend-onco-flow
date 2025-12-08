@@ -287,7 +287,7 @@ public class PacienteService {
 
             paciente.setDtDiagnostico(gerarDataAleatoria(dtAtual.minusDays(75), dtAtual));
 
-            paciente.setDtEncaminhamento(gerarDataAleatoria(dtAtual.minusDays(45), dtAtual));
+            paciente.setDtEncaminhamento(gerarDataAleatoria(paciente.getDtDiagnostico(), dtAtual));
 
             paciente.setExamesImagem(new Random().nextBoolean());
 
