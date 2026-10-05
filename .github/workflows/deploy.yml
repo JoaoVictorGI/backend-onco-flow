@@ -39,9 +39,34 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           COMPOSE_FILE_PATH: ${{ secrets.COMPOSE_FILE_PATH }}
         run: |
+          set -euo pipefail
           echo "$SSH_KEY" > key.pem
           chmod 600 key.pem
-          ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "cd ${COMPOSE_FILE_PATH} && docker-compose stop backend"
-          ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "docker pull joaovictorgi/backend-onco-flow:latest"
-          ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "cd ${COMPOSE_FILE_PATH} && docker-compose up -d backend"
-          rm key.pem
+          trap 'rm -f key.pem' EXIT
+
+          ssh_with_retry() {
+            local command="$1"
+            local max_attempts=3
+            local attempt=1
+            local ssh_options="-i key.pem -o StrictHostKeyChecking=no -o ConnectTimeout=20"
+
+            while [ "$attempt" -le "$max_attempts" ]; do
+              if ssh $ssh_options "${EC2_USER}@${EC2_HOST}" "$command"; then
+                return 0
+              fi
+
+              if [ "$attempt" -lt "$max_attempts" ]; then
+                echo "SSH command failed (attempt $attempt/$max_attempts). Retrying in 10 seconds..."
+                sleep 10
+              fi
+
+              attempt=$((attempt + 1))
+            done
+
+            echo "SSH command failed after $max_attempts attempts."
+            return 1
+          }
+
+          ssh_with_retry "cd ${COMPOSE_FILE_PATH} && docker-compose stop backend"
+          ssh_with_retry "docker pull joaovictorgi/backend-onco-flow:latest"
+          ssh_with_retry "cd ${COMPOSE_FILE_PATH} && docker-compose up -d backend"
